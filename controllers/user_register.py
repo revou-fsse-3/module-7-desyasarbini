@@ -3,13 +3,13 @@ from connectors.mysql_connector import engine
 from models.user import User
 from sqlalchemy.orm import sessionmaker
 
-user_routes = Blueprint('user_routes',__name__)
+user_routes_register = Blueprint('user_routes_register',__name__)
 
-@user_routes.route("/register", methods=['GET'])
+@user_routes_register.route("/register", methods=['GET'])
 def user_register():
     return render_template("users/register.html")
 
-@user_routes.route("/register", methods=['POST'])
+@user_routes_register.route("/register", methods=['POST'])
 def do_user_registration():
 
     name = request.form['name']
@@ -31,4 +31,4 @@ def do_user_registration():
         # gagal
         session.rollback()
         return {"message": "Gagal register"}
-    return {"message": "Sukses register"}
+    return redirect('/login')

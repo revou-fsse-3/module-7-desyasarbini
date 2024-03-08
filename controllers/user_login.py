@@ -6,13 +6,13 @@ from sqlalchemy import select, or_
 from sqlalchemy.orm import sessionmaker
 from flask_login import login_user, logout_user
 
-user_routes = Blueprint('user_routes',__name__)
+user_routes_login = Blueprint('user_routes_login',__name__)
 
-@user_routes.route("/login", methods=['GET'])
+@user_routes_login.route("/login", methods=['GET'])
 def user_login():
     return render_template("users/login.html")
 
-@user_routes.route("/login", methods=['POST'])
+@user_routes_login.route("/login", methods=['POST'])
 def do_user_login():
     connection = engine.connect()
     Session = sessionmaker(connection)
@@ -31,12 +31,12 @@ def do_user_login():
         # u/ menyimpan data user yg berhasil login ke session 
         # lalu dibuatkan session id yg akan dikembalikan ke browser dan disimpan dalam cookie 
         login_user(user, remember = False)
-        return redirect('/product')
+        return redirect('/book')
 
     except Exception as e:
         return {"message": "login gagal"}
     
-@user_routes.route("/logout", methods=['GET'])
+@user_routes_login.route("/logout", methods=['GET'])
 def do_user_logout():
     logout_user()
     return redirect('/login')

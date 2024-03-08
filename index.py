@@ -3,7 +3,7 @@ from flask import Flask
 from connectors.mysql_connector import engine
 from sqlalchemy import text
 from sqlalchemy.orm import sessionmaker
-from models.product import Product
+from models.book import Book
 from sqlalchemy import select
 
 from flask_login import LoginManager
@@ -11,9 +11,9 @@ from models.user import User
 import os
 
 # Load Controller Files
-from controllers.product import product_routes
-from controllers.user_login import user_routes
-from controllers.user_register import user_routes
+from controllers.book import book_routes
+from controllers.user_login import user_routes_login
+from controllers.user_register import user_routes_register
 
 load_dotenv()
 
@@ -33,20 +33,21 @@ def load_user(user_id):
 
     return session.query(User).get(int(user_id))
 
-app.register_blueprint(product_routes)
-app.register_blueprint(user_routes)
+app.register_blueprint(book_routes)
+app.register_blueprint(user_routes_register)
+app.register_blueprint(user_routes_login)
 
-# Product Route
+# Book Route
 @app.route("/")
 def hello_world():
     
-    # Fetch all Products
-    product_query = select(Product)
+    # Fetch all Books
+    book_query = select(Book)
     
     connection = engine.connect()
     Session = sessionmaker(connection)
     with Session() as session:
-        result = session.execute(product_query)
+        result = session.execute(book_query)
         for row in result.scalars():
             print(f'ID: {row.id}, Name: {row.name}')
 

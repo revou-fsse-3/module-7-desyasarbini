@@ -9,11 +9,12 @@ import bcrypt
 class User(Base, UserMixin):
     __tablename__ = 'user'
 
-    id = mapped_column(Integer, primary_key=True, autoincrement=True)
-    email = mapped_column(String(100), nullable=False)
-    name = mapped_column(String(100), nullable=False)
-    password = mapped_column(String(100), nullable=False)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name = mapped_column(String(100), nullable=False)
+    email = mapped_column(String(100), nullable=False)
+    password = mapped_column(String(100), nullable=False)
+    
 
     def __repr__(self):
         return f'<User {self.name}>'

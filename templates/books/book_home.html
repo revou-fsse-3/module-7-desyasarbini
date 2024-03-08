@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product List</title>
+    <title>Book List</title>
     <style>
       table {
         border-collapse: collapse;
@@ -54,14 +54,14 @@
       Hello, {{ response_data ['name'] }}
       <a href="/logout">Logout</a>
     </div>
-    <h2>Product List</h2>
-    <button onclick="openNewProductForm()">Add New Product</button>
+    <h2>Book List</h2>
+    <button onclick="openNewBookForm()">Add New Book</button>
     <div class="search-container">
       <input
         type="text"
         class="search-input"
         id="searchInput"
-        placeholder="Search..."
+        placeholder="Search Title..."
       />
       <button class="search-button" onclick="search()">Search</button>
     </div>
@@ -70,60 +70,52 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Name</th>
+          <th>Book Title</th>
           <th>Price</th>
           <th>Description</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        {% for product in response_data['products'] %}
+        {% for book in response_data['books'] %}
         <tr>
-          <td>{{ product.id }}</td>
-          <td id="name_{{ product.id }}">{{ product.name }}</td>
-          <td id="price_{{ product.id }}">{{ product.price }}</td>
-          <td id="desc_{{ product.id }}">{{ product.description }}</td>
+          <td>{{ book.id }}</td>
+          <td id="title_{{ book.id }}">{{ book.title }}</td>
+          <td id="price_{{ book.id }}">{{ book.price }}</td>
+          <td id="desc_{{ book.id }}">{{ book.description }}</td>
           <td>
-            <a
-              href="{{ url_for('product_routes.product_detail', id=product.id) }}"
+            <a href="{{ url_for('book_routes.book_detail', id=book.id) }}"
               >Review</a
             >
-            <button
-              onclick="openEditProductForm(this)"
-              id="edit_{{ product.id }}"
-            >
+            <button onclick="openEditBookForm(this)" id="edit_{{ book.id }}">
               Edit
             </button>
-            <button onclick="deleteProduct(this)" id="delete_{{ product.id }}">
+            <button onclick="deleteBook(this)" id="delete_{{ book.id }}">
               Delete
             </button>
           </td>
         </tr>
         {% endfor %}
-        <!-- Add more <tr> elements for additional products -->
+        <!-- Add more <tr> elements for additional Books -->
       </tbody>
     </table>
-    <div id="newProductForm" style="display: none">
-      <h3 id="formSection">Add New Product</h3>
-      <form id="productForm">
-        <label for="productName">Product Name:</label>
-        <input type="text" id="productName" name="productName" /><br /><br />
-        <label for="productPrice">Price:</label>
-        <input
-          type="number"
-          id="productPrice"
-          name="productPrice"
-        /><br /><br />
-        <label for="productDescription">Description:</label><br />
+    <div id="newBookForm" style="display: none">
+      <h3 id="formSection">Add New Book</h3>
+      <form id="bookForm">
+        <label for="bookTitle">Book Title:</label>
+        <input type="text" id="bookTitle" name="bookTitle" /><br /><br />
+        <label for="bookPrice">Price:</label>
+        <input type="number" id="bookPrice" name="bookPrice" /><br /><br />
+        <label for="bookDescription">Description:</label><br />
         <textarea
-          id="productDescription"
-          name="productDescription"
+          id="bookDescription"
+          name="bookDescription"
           rows="4"
           cols="50"
         ></textarea
         ><br /><br />
         <button type="button" onclick="submitForm()">Submit</button>
-        <button type="button" onclick="closeNewProductForm()">Cancel</button>
+        <button type="button" onclick="closeNewBookForm()">Cancel</button>
       </form>
     </div>
     <script
@@ -134,42 +126,42 @@
     <script>
       var form_url = "";
       var form_method = "";
-      var base_url = "{{ url_for('product_routes.product_home') }}";
+      var base_url = "{{ url_for('book_routes.book_home') }}";
 
-      function openNewProductForm() {
+      function openNewBookForm() {
         form_method = "POST";
-        form_url = "{{ url_for('product_routes.product_insert') }}";
-        document.getElementById("newProductForm").style.display = "block";
-        document.getElementById("formSection").innerHTML = "Add New Product";
-        document.getElementById("productForm").reset();
+        form_url = "{{ url_for('book_routes.book_insert') }}";
+        document.getElementById("newBookForm").style.display = "block";
+        document.getElementById("formSection").innerHTML = "Add New Book";
+        document.getElementById("bookForm").reset();
       }
 
-      function openEditProductForm(button) {
-        var selected_product_id = button.id.split("_")[1];
+      function openEditBookForm(button) {
+        var selected_book_id = button.id.split("_")[1];
         form_method = "PUT";
-        form_url = base_url + "/" + selected_product_id;
+        form_url = base_url + "/" + selected_book_id;
 
-        var name = $("#name_" + selected_product_id).html();
-        var price = $("#price_" + selected_product_id).html();
-        var desc = $("#desc_" + selected_product_id).html();
+        var title = $("#title_" + selected_book_id).html();
+        var price = $("#price_" + selected_book_id).html();
+        var desc = $("#desc_" + selected_book_id).html();
 
-        $("#productName").val(name);
-        $("#productPrice").val(price);
-        $("#productDescription").val(desc);
+        $("#bookTitle").val(title);
+        $("#bookPrice").val(price);
+        $("#bookDescription").val(desc);
 
-        document.getElementById("newProductForm").style.display = "block";
-        document.getElementById("formSection").innerHTML = "Edit Product";
+        document.getElementById("newBookForm").style.display = "block";
+        document.getElementById("formSection").innerHTML = "Edit Book";
       }
 
-      function closeNewProductForm() {
-        document.getElementById("newProductForm").style.display = "none";
+      function closeNewBookForm() {
+        document.getElementById("newBookForm").style.display = "none";
       }
 
       function submitForm() {
         var request_data = {
-          name: $("#productName").val(),
-          price: $("#productPrice").val(),
-          description: $("#productDescription").val(),
+          title: $("#bookTitle").val(),
+          price: $("#bookPrice").val(),
+          description: $("#bookDescription").val(),
         };
 
         $.ajax({
@@ -182,9 +174,9 @@
         });
       }
 
-      function deleteProduct(button) {
-        var selected_product_id = button.id.split("_")[1];
-        var delete_url = base_url + "/" + selected_product_id;
+      function deleteBook(button) {
+        var selected_book_id = button.id.split("_")[1];
+        var delete_url = base_url + "/" + selected_book_id;
 
         $.ajax({
           url: delete_url,
